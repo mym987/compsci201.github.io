@@ -10,25 +10,31 @@ import java.util.Comparator;
 
 public class Term implements Comparable<Term> {
 
-	private final String word;
-	private final double weight;
+	private final String myWord;
+	private final double myWeight;
 
 	/**
-	 * The constructor for the Term class. Should set the values of word and 
+	 * The constructor for the Term class. Should set the values of word and
 	 * weight to the inputs, and throw the exceptions listed below
-	 * @param word The word this term consists of
-	 * @param weight The weight of this word in the Autocomplete algorithm
-	 * @throws NullPointerException if word is null
-	 * @throws IllegalArgumentException if weight is negative
+	 * 
+	 * @param word
+	 *            The word this term consists of
+	 * @param weight
+	 *            The weight of this word in the Autocomplete algorithm
+	 * @throws NullPointerException
+	 *             if word is null
+	 * @throws IllegalArgumentException
+	 *             if weight is negative
 	 */
 	public Term(String word, double weight) {
-		//TODO: Write this constructor
+		myWeight = weight;
+		myWord = word;
 	}
 
 	/**
-	 * A Comparator for comparing Terms using a set number of the letters
-	 * they start with. This Comparator may be useful in writing your
-	 * implementations of Autocompletors.
+	 * A Comparator for comparing Terms using a set number of the letters they
+	 * start with. This Comparator may be useful in writing your implementations
+	 * of Autocompletors.
 	 *
 	 */
 	public static class PrefixOrder implements Comparator<Term> {
@@ -38,43 +44,44 @@ public class Term implements Comparable<Term> {
 			this.r = r;
 		}
 
-		/**Compares v and w lexicographically using only their first r letters. 
+		/**
+		 * Compares v and w lexicographically using only their first r letters.
 		 * If the first r letters are the same, then v and w should be
-		 * considered equal. 
-		 * This method should take O(r) to run, and be independent
-		 * of the length of v and w's length.
-		 * You can access the Strings to compare using v.word and w.word.
-		 * @param v/w - Two Terms whose words are being compared
+		 * considered equal. This method should take O(r) to run, and be
+		 * independent of the length of v and w's length. You can access the
+		 * Strings to compare using v.word and w.word.
+		 * 
+		 * @param v/w
+		 *            - Two Terms whose words are being compared
 		 */
 		public int compare(Term v, Term w) {
-			//TODO: Implement this method
+			String vS = v.myWord.substring(0, Math.min(r, v.myWord.length()));
+			String wS = w.myWord.substring(0, Math.min(r, w.myWord.length()));
+			return vS.compareTo(wS);
 		}
 	}
 
 	/**
 	 * A Comparator for comparing Terms using only their weights, in descending
-	 * order.
-	 * This Comparator may be useful in writing your
-	 * implementations of Autocompletor
+	 * order. This Comparator may be useful in writing your implementations of
+	 * Autocompletor
 	 *
 	 */
 	public static class ReverseWeightOrder implements Comparator<Term> {
 		public int compare(Term v, Term w) {
-			//TODO: Implement this method			
+			return Double.compare(w.myWeight, v.myWeight);
 		}
 	}
 
-
 	/**
 	 * A Comparator for comparing Terms using only their weights, in ascending
-	 * order.
-	 * This Comparator may be useful in writing your
-	 * implementations of Autocompletor
+	 * order. This Comparator may be useful in writing your implementations of
+	 * Autocompletor
 	 *
 	 */
 	public static class WeightOrder implements Comparator<Term> {
 		public int compare(Term v, Term w) {
-			//TODO: Implement this method			
+			return Double.compare(v.myWeight, w.myWeight);
 		}
 	}
 
@@ -82,21 +89,21 @@ public class Term implements Comparable<Term> {
 	 * The default sorting of Terms is lexicographical ordering.
 	 */
 	public int compareTo(Term that) {
-		return word.compareTo(that.word);
+		return myWord.compareTo(that.myWord);
 	}
 
 	/**
 	 * Getter methods, use these in other classes which use Term
 	 */
 	public String getWord() {
-		return word;
+		return myWord;
 	}
 
 	public double getWeight() {
-		return weight;
+		return myWeight;
 	}
 
 	public String toString() {
-		return String.format("%14.1f\t%s", weight, word);
+		return String.format("%14.1f\t%s", myWeight, myWord);
 	}
 }
