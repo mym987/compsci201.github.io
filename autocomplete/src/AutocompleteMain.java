@@ -19,7 +19,7 @@ public class AutocompleteMain {
   final static String TRIE_AUTOCOMPLETE = "TrieAutocomplete";
   
   /* Modify name of Autocompletor implementation as necessary */
-  final static String AUTOCOMPLETOR_CLASS_NAME = BRUTE_AUTOCOMPLETE;
+  final static String AUTOCOMPLETOR_CLASS_NAME = TRIE_AUTOCOMPLETE;
   
   public static void main(String[] args) {
     JFileChooser fileChooser = new JFileChooser(".");
