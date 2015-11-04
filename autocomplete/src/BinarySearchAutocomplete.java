@@ -61,7 +61,7 @@ public class BinarySearchAutocomplete implements Autocompletor {
 	 * @return The first index i for which comparator considers a[i] and key as
 	 *         being equal. If no such index exists, return -1 instead.
 	 */
-	private static int firstIndexOf(Term[] a, Term key, Comparator<Term> comparator) {
+	static int firstIndexOf(Term[] a, Term key, Comparator<Term> comparator) {
 		int start = 0, end = a.length - 1;
 		while (start < end - 1) {
 			int i = (start + end) / 2;
@@ -96,7 +96,7 @@ public class BinarySearchAutocomplete implements Autocompletor {
 	 * @return The last index i for which comparator considers a[i] and key as
 	 *         being equal. If no such index exists, return -1 instead.
 	 */
-	private static int lastIndexOf(Term[] a, Term key, Comparator<Term> comparator) {
+	static int lastIndexOf(Term[] a, Term key, Comparator<Term> comparator) {
 		int start = 0, end = a.length - 1;
 		while (start < end - 1) {
 			int i = (start + end) / 2;
@@ -170,17 +170,25 @@ public class BinarySearchAutocomplete implements Autocompletor {
 		if (start == -1)
 			return "";
 		int end = lastIndexOf(myTerms, new Term(prefix, 0), cmp);
-		return Arrays.stream(myTerms, start, end+1).max(new Term.ReverseWeightOrder()).get().getWord();
+		return Arrays.stream(myTerms, start, end+1).max(new Term.WeightOrder()).get().getWord();
 	}
 
-	public static void main(String[] args) {
-		Term[] t = { new Term("bbca", 10), new Term("bbca", 90), new Term("bbcc", 2), new Term("bbc", 0),
-				new Term("dbcd", 0) };
+	public static void main(String[] args) throws Exception{
+		Term[] t = {new Term("ape", 6), 
+				new Term("app", 4), 
+				new Term("ban", 2),
+				new Term("bat", 3),
+				new Term("bee", 5),
+				new Term("car", 7),
+				new Term("cat", 1),
+				new Term("caa",100)};
 		// String[] t1 = new String[5];
 		// System.arraycopy(t, 0, t1, 0, 5);
+		Autocompletor auto = (Autocompletor) Class.forName("BinarySearchAutocomplete")
+	                  .getDeclaredConstructor(String[].class, double[].class).newInstance(null, null);
 		BinarySearchAutocomplete b = new BinarySearchAutocomplete(t);
-		for (String s : b.topKMatches("bbc", 4))
-			System.out.println(s);
-		System.out.println(lastIndexOf(t, new Term("dbcd", 0), new Term.PrefixOrder(6)));
+		for (String s : b.topKMatches("ca", 4))
+			;//System.out.println(s);
+		System.out.println(b.topMatch("ca"));
 	}
 }

@@ -59,6 +59,8 @@ public class TrieAutocomplete implements Autocompletor {
 	private void add(String word, double weight) {
 		Node p = myRoot;
 		p.mySubtreeMaxWeight = Math.max(p.mySubtreeMaxWeight, weight);
+		if(word==null)
+			System.err.println("ERR:NULL WORD");
 		for (int i = 0; i < word.length(); i++) {
 			char c = word.charAt(i);
 			if (!p.children.containsKey(c))
@@ -98,10 +100,7 @@ public class TrieAutocomplete implements Autocompletor {
 			return new String[0];
 		List<Node> list = new LinkedList<>();
 		traverse(p, list);
-		return list.stream()
-				.sorted(Collections.reverseOrder())
-				.map(n -> n.myWord)
-				.distinct().limit(k)
+		return list.stream().sorted(Collections.reverseOrder()).map(n -> n.myWord).distinct().limit(k)
 				.toArray(n -> new String[n]);
 	}
 
@@ -140,24 +139,24 @@ public class TrieAutocomplete implements Autocompletor {
 	}
 
 	private Node find(Node p, double weight) {
-		if(p.isWord && p.myWeight == weight)
+		if (p.isWord && p.myWeight == weight)
 			return p;
-		for(char ch:p.children.keySet()){
-			Node t = find(p.getChild(ch),weight);
-			if(t!=null)
-				return t;
+		for (char ch : p.children.keySet()) {
+			if (p.getChild(ch).mySubtreeMaxWeight == weight)
+				return find(p.getChild(ch), weight);
 		}
 		return null;
 	}
-	
+
 	public static void main(String[] args) {
-		String[] a = {"a","ab","abc","abcd","abcde"};
-		double[] b = {1,2,3,5,5};
-		TrieAutocomplete tr = new TrieAutocomplete(a,b);
-		//for (String s : tr.topKMatches("ab", 5))
-			//System.out.println(s);
+		String[] a = { "a", "ab", "abc", "abcd", "abcde" };
+		double[] b = { 1, 2, 3, 5, 5 };
+		TrieAutocomplete tr = new TrieAutocomplete(a, b);
+		// for (String s : tr.topKMatches("ab", 5))
+		// System.out.println(s);
 		System.out.println(tr.topMatch(""));
-		//System.out.println(lastIndexOf(t, new Term("dbcd", 0), new Term.PrefixOrder(6)));
+		// System.out.println(lastIndexOf(t, new Term("dbcd", 0), new
+		// Term.PrefixOrder(6)));
 	}
 
 }
