@@ -50,8 +50,7 @@ public class LevelOrder {
 				return "not complete\n";
 		}
 		StringBuilder sb = new StringBuilder();
-		map.forEach((k,v)->sb.append(v+" "));
-		sb.deleteCharAt(sb.length()-1).append("\n");
-		return sb.toString();
+		map.forEach((k,v)->sb.append(" "+v));
+		return sb.append("\n").toString();
 	}
 }
