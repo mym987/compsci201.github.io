@@ -1,7 +1,6 @@
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -9,10 +8,43 @@ import javax.swing.JFileChooser;
 
 public class AutocompletorBenchmark {
 
-	public static Random myRandom = new Random(1234);
-
+	public static Random ourRandom = new Random(1234);
+	public static final String CHARSET = "UTF-8";
+	public static final Locale LOCALE = Locale.US;
 	public static Autocompletor getInstance(String[] words, double[] weights) {
 		return new BruteAutocomplete(words, weights);
+	}
+	// chooser allows users to select a file by navigating through
+	// directories
+	private static JFileChooser ourChooser = new JFileChooser(System
+			.getProperties().getProperty("user.dir"));
+
+	/**
+	 * Brings up chooser for user to select a file
+	 * 
+	 * @return Scanner for user selected file, null if file not found
+	 */
+	public static Scanner getScanner() {
+		int retval = ourChooser.showOpenDialog(null);
+		if (retval == JFileChooser.APPROVE_OPTION) {
+			File f = ourChooser.getSelectedFile();
+			Scanner s;
+			try {
+				if (f.canRead()) {
+					System.out.println("Opening - " +  f.getCanonicalPath() + ".");
+				} else {
+					System.out.println("Could not open selected file.");
+					return null;
+				}
+				s = new Scanner(f, CHARSET);
+				s.useLocale(LOCALE);
+				
+			} catch (IOException e) {
+				return null;
+			}
+			return s;
+		}
+		return null;
 	}
 
 	public static long countNodes(Node root) {
@@ -22,34 +54,13 @@ public class AutocompletorBenchmark {
 		return result;
 	}
 
-	public static File openFileFromDialog() {
-		File file = null;
-		System.out.println("Opening file dialog.");
-		JFileChooser openChooser = new JFileChooser(System.getProperties().getProperty("user.dir"));
-		int retval = openChooser.showOpenDialog(null);
-		if (retval == JFileChooser.APPROVE_OPTION) {
-			file = openChooser.getSelectedFile();
-			if (file.canRead()) {
-				System.out.println("Opening - " + file.getName() + ".");
-			} else {
-				System.out.println("Could not open selected file.");
-			}
-		} else
-			System.out.println("File open canceled.");
-		return file;
-	}
-
 	public static void main(String[] args) {
-		File file = openFileFromDialog();
-		if (file == null)
-			System.exit(0); // prevent further execution which may throw null pointer exception
 		Scanner in = null;
-		try {
-			in = new Scanner(new BufferedInputStream(new FileInputStream(file)));
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(0);
-		}
+		do {
+			in = getScanner();
+			
+		} while (in == null);
+		
 		int N = 0;
 		String[] terms = null;
 		double[] weights = null;
@@ -77,7 +88,7 @@ public class AutocompletorBenchmark {
 			System.out.println("Created " + countNodes(((TrieAutocomplete) auto).myRoot) + " nodes");
 		String randomWord = "";
 		while (randomWord.length() <= 2)
-			randomWord = terms[myRandom.nextInt(terms.length)];
+			randomWord = terms[ourRandom.nextInt(terms.length)];
 		String randomPrefix1 = randomWord.substring(0, 1);
 		String randomPrefix2 = randomWord.substring(0, 2);
 		String[] queries = { "", randomWord, randomPrefix1, randomPrefix2, "notarealword" };
