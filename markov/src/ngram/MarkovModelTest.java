@@ -1,5 +1,7 @@
 package ngram;
 import static org.junit.Assert.*;
+
+import java.util.Random;
 import java.util.Scanner;
 
 import org.junit.Before;
@@ -11,7 +13,7 @@ public class MarkovModelTest {
 
 	@Before
 	public void setUp() {
-		myMark = new MarkovModel();
+		myMark = new MarkovModel(new Random(1234));
 	}
 
 	/**
@@ -23,7 +25,7 @@ public class MarkovModelTest {
 
 		myMark.initialize(new Scanner("aabbaabbaabbaabbaabbaabbaabbaabbaabbaabba"
 				+ "abbaabbaabbaabbaabbaabbaabbaabbaabbaabbaabbaabbaabbaabb"));
-		myMark.process("2");
+		myMark.makeNGram(2, 100);
 		String output = "";
 		while (output.length() < 8) {
 			output = myMark.makeNGram(2, 100);
@@ -61,7 +63,7 @@ public class MarkovModelTest {
 	@Test(timeout = 10000)
 	public void testMapAllRepeats() {
 		myMark.initialize(new Scanner("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
-		myMark.process("1");
+		myMark.makeNGram(1, 100);
 		String output = "";
 		while (output.length() < 8) {
 			output = myMark.makeNGram(1, 
@@ -79,7 +81,7 @@ public class MarkovModelTest {
 	@Test(timeout = 10000)
 	public void testMapNoRepeats() {
 		myMark.initialize(new Scanner("qwertyuiopasdfghjklzxcvbnm"));
-		myMark.process("1");
+		myMark.makeNGram(1, 100);
 		String output = myMark.makeNGram(1, 100);
 		assertTrue(
 				"This test checks if MarkovModel makes a correct " + 
