@@ -61,7 +61,8 @@ public class NgramGui {
 	public NgramGui(Stage stage) {
 		_Pane = new VBox(5);
 		_Stage = stage;
-		stage.setScene(new Scene(_Pane));
+		_Stage.setTitle("CompSci 201 Markov");
+		_Stage.setScene(new Scene(_Pane));
 		_Text = getTextArea();
 		_Status = new TextField("Markov");
 		_Status.setEditable(false);
@@ -255,7 +256,7 @@ class Menus extends MenuBar {
 
 	private MenuItem getSave() {
 		MenuItem item = new MenuItem("Save Text");
-		item.setAccelerator(new KeyCodeCombination(KeyCode.U, KeyCombination.SHORTCUT_DOWN));
+		item.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN));
 		item.setOnAction(e -> {
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle("Save Text File");
