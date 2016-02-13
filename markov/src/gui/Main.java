@@ -1,10 +1,9 @@
-package main;
+package gui;
 import java.util.Random;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
 import ngram.MarkovModel;
-import gui.NgramGui;
 /**
  * Main for Markov Text Generation Program
  * 

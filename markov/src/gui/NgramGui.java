@@ -1,8 +1,10 @@
 package gui;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
@@ -51,6 +53,7 @@ public class NgramGui {
 	private final Stage _Stage;
 	private final TextArea _Text;
 	private final TextField _Status;
+	private final ControlPane _control;
 	private boolean _loaded = false;
 
 	@SuppressWarnings("static-access")
@@ -62,13 +65,14 @@ public class NgramGui {
 		_Status = new TextField("Markov");
 		_Status.setEditable(false);
 		_Stage.setMaxWidth(Double.MAX_VALUE);
+		_control = new ControlPane(this);
 		TitledPane outPane = enclose("output", _Text);
 		outPane.setMaxHeight(Double.MAX_VALUE);
 		TitledPane msgPane = enclose("message", _Status);
-		_Pane.getChildren().addAll(new Menus(this), outPane, msgPane);
+		TitledPane ctlPane = enclose("input", _control);
+		_Pane.getChildren().addAll(new Menus(this), ctlPane,outPane, msgPane);
 		_Pane.setVgrow(outPane, Priority.ALWAYS);
 		stage.show();
-		showErr(new RuntimeException());
 	}
 
 	public void setModel(INgram model) {
@@ -108,9 +112,19 @@ public class NgramGui {
 		clear();
 		Scanner s = null;
 		try {
+			long start = System.nanoTime();
 			s = new Scanner(new BufferedInputStream(new FileInputStream(file)));
-			_Model.initialize(s);
+			int chars = _Model.initialize(s);
+			long end = System.nanoTime();
 			_loaded = true;
+			_control.validate();
+			String msg = "";
+			if (_Model instanceof MarkovModel)
+				msg = String.format("Read %d chars in %.6f seconds", chars, (end - start) / 1.0e9);
+			else
+				msg = String.format("Read %d words in %.6f seconds", chars,
+						(end - start) / 1.0e9);
+			showMsg(msg);
 		} catch (Exception e) {
 			showErr(e);
 		} finally {
@@ -123,9 +137,19 @@ public class NgramGui {
 		clear();
 		Scanner s = null;
 		try {
+			long start = System.nanoTime();
 			s = new Scanner(new BufferedInputStream((new URL(url)).openStream()));
-			_Model.initialize(s);
+			int chars = _Model.initialize(s);
+			long end = System.nanoTime();
 			_loaded = true;
+			_control.validate();
+			String msg = "";
+			if (_Model instanceof MarkovModel)
+				msg = String.format("Read %d chars in %.6f seconds", chars, (end - start) / 1.0e6);
+			else
+				msg = String.format("Read %d words in %.6f seconds", chars,
+						(end - start) / 1.0);
+			showMsg(msg);
 		} catch (Exception e) {
 			showErr(e);
 		} finally {
@@ -139,7 +163,17 @@ public class NgramGui {
 	}
 
 	protected void saveFile(File file) {
-		//TODO
+		PrintWriter out = null;
+		try{
+			out = new PrintWriter(new BufferedOutputStream(new FileOutputStream(file)));
+			out.print(_Text.getText());
+			out.flush();
+			out.close();
+		}catch(Exception e){
+			showErr(e);
+			if(out!=null)
+				out.close();
+		}
 	}
 
 	protected void generate(int k, int length) {
@@ -149,10 +183,11 @@ public class NgramGui {
 			long end = System.nanoTime();
 			String msg = "";
 			if (_Model instanceof MarkovModel)
-				msg = String.format("Read %d chars in %.3f seconds", s.length(), (end - start) / 1.0);
+				msg = String.format("Generated %d chars in %.3f seconds", s.length(), (end - start) / 1.0e9);
 			else
-				msg = String.format("Read %d words in %.3f seconds", s.length() - s.replace(" ", "").length() + 1,
-						(end - start) / 1.0);
+				msg = String.format("Generated %d words in %.3f seconds", s.split(" ").length,
+						(end - start) / 1.0e9);
+			updateText(s);
 			showMsg(msg);
 		} catch (Exception e) {
 			showErr(e);
