@@ -352,7 +352,7 @@ class ErrorDialog extends Alert {
 	public ErrorDialog(Exception e) {
 		super(AlertType.ERROR);
 		setTitle("Error");
-		setHeaderText("Error 错误 エラー Erreur خطأ");
+		setHeaderText("Error");
 		setContentText(e.toString());
 
 		// Set expandable Exception into the dialog pane.
