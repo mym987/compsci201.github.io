@@ -15,6 +15,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
@@ -109,7 +110,6 @@ public class NgramGui {
 	}
 
 	protected void readFile(File file) {
-		clear();
 		Scanner s = null;
 		try {
 			long start = System.nanoTime();
@@ -124,6 +124,7 @@ public class NgramGui {
 			else
 				msg = String.format("Read %d words in %.6f seconds", chars,
 						(end - start) / 1.0e9);
+			clear();
 			showMsg(msg);
 		} catch (Exception e) {
 			showErr(e);
@@ -134,7 +135,6 @@ public class NgramGui {
 	}
 
 	protected void readURL(String url) {
-		clear();
 		Scanner s = null;
 		try {
 			long start = System.nanoTime();
@@ -149,6 +149,7 @@ public class NgramGui {
 			else
 				msg = String.format("Read %d words in %.6f seconds", chars,
 						(end - start) / 1.0);
+			clear();
 			showMsg(msg);
 		} catch (Exception e) {
 			showErr(e);
@@ -209,9 +210,19 @@ class Menus extends MenuBar {
 	protected Menus(NgramGui gui) {
 		_Gui = gui;
 		Menu file = new Menu("File");
-		Menu help = new Menu("About");
+		Menu help = new Menu("Help");
+		MenuItem abt = new MenuItem("About");
+		help.getItems().add(abt);
+		abt.setOnAction(e->showInfo());
 		file.getItems().addAll(getOpen(), getURL(), getSave(), getClear(), new SeparatorMenuItem(), getExit());
 		getMenus().addAll(file, help);
+	}
+	
+	private void showInfo(){
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("About");
+		alert.setContentText("CompSci 201 Markov Assignment\n\nOriginal Author: Owen Astrachan\nGUI developed by Mike Ma");
+		alert.showAndWait();
 	}
 
 	private MenuItem getOpen() {
