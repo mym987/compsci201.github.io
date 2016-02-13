@@ -1,4 +1,7 @@
+package ngram;
 import java.util.*;
+
+import gui.IView;
 
 /**
  * The interface for typical models used in Compsci100.

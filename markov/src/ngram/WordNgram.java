@@ -1,3 +1,4 @@
+package ngram;
 /*
  * This class encapsulates N words/strings so that the
  * group of N words can be treated as a key in a map or an

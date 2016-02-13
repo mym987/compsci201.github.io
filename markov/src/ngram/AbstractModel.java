@@ -1,5 +1,9 @@
+package ngram;
 import java.util.*;
+
 import java.io.Reader;
+
+import gui.IView;
 
 /**
  * This class supplies a bare minimum model implementation,

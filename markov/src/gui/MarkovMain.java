@@ -1,3 +1,7 @@
+package gui;
+import ngram.IModel;
+import ngram.MarkovModel;
+
 /**
  * Main for Markov Text Generation Program
  * 

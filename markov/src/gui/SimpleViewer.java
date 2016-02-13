@@ -1,4 +1,8 @@
+package gui;
 import javax.swing.*;
+
+import ngram.IModel;
+
 import java.awt.BorderLayout;
 import java.awt.event.*;
 import java.util.*;

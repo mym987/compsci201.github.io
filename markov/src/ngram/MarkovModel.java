@@ -1,3 +1,4 @@
+package ngram;
 import java.util.*;
 
 /**
