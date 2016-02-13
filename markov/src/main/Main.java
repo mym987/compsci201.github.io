@@ -5,7 +5,13 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import ngram.MarkovModel;
 import gui.NgramGui;
-
+/**
+ * Main for Markov Text Generation Program
+ * 
+ * @author Mike Ma
+ * @date Feb 13, 2016
+ *
+ */
 public class Main extends Application {
 
 	@Override
